@@ -95,7 +95,7 @@
                   :disabled="invalid"
                 >CHECK</button>
                 <div class="ReturnToCart">
-                  <router-link class="ReturnToCart_color" to="/shop">Return to Cart</router-link>
+                  <router-link class="ReturnToCart_color" to="/cart">Return to Cart</router-link>
                 </div>
               </div>
             </form>

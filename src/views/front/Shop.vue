@@ -35,14 +35,12 @@
       </div>
     </div>
 
-    <!-- Pagination -->
-    <Pagination :pages="pagination" @update="getFrontProducts"></Pagination>
     <!-- Vue Loading -->
     <loading :active.sync="isLoading"></loading>
+    <!-- Pagination -->
+    <Pagination :pages="pagination" @update="getFrontProducts"></Pagination>
     <!-- Product Detail Modal -->
     <Productdetail :temp-product="tempProduct" @addtocart="addToCart"></Productdetail>
-    <!-- Cart -->
-    <Cart :cart="cart" :cartTotal="cartTotal" @getcart="getCart"></Cart>
   </div>
 </template>
 
@@ -50,7 +48,6 @@
 import $ from 'jquery';
 import Pagination from '../../components/Pagination.vue';
 import Productdetail from '../../components/front/ProductDetail.vue';
-import Cart from '../../components/front/Cart.vue';
 
 export default {
   data() {
@@ -58,15 +55,12 @@ export default {
       products: [],
       pagination: {},
       tempProduct: {},
-      cart: {},
-      cartTotal: 0,
       isLoading: false,
     };
   },
   components: {
     Pagination,
     Productdetail,
-    Cart,
   },
   filters: {
     thousandth(num) {
@@ -88,7 +82,6 @@ export default {
     },
     getDetailed(item) {
       this.isLoading = true;
-      // GET api/{uuid}/ec/product/{id}
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/product/${item.id}`;
       this.$http.get(url).then((response) => {
         this.tempProduct = response.data.data;
@@ -96,33 +89,17 @@ export default {
         this.isLoading = false;
       });
     },
-    getCart() {
-      this.isLoading = true;
-      // GET api/{uuid}/ec/shopping
-      this.cartTotal = 0;
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-      this.$http.get(url).then((response) => {
-        this.cart = response.data.data;
-        this.cart.forEach((item) => {
-          this.cartTotal += item.product.price * item.quantity;
-        });
-        this.isLoading = false;
-      });
-    },
     addToCart(item, quantity = 1) {
       this.isLoading = true;
-      this.cart = {
+      const cart = {
         product: item.id,
         quantity,
       };
-      // POST api/{uuid}/ec/shopping
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-      this.$http.post(url, this.cart).then(() => {
-        this.getCart();
+      this.$http.post(url, cart).then(() => {
         this.isLoading = false;
         $('#productModal').modal('hide');
       }).catch((error) => {
-        this.getCart();
         this.isLoading = false;
         alert(error.response.data.errors[0]);
         $('#productModal').modal('hide');

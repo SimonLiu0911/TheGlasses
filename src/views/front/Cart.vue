@@ -1,15 +1,13 @@
 <template>
   <div class="cart">
     <div class="row justify-content-center my-2">
-      <div class="col-md-8">
+      <div class="col-md-8" v-if="shoppongBagItems">
         <div class="text-right mb-3">
           <button
             type="button"
             class="btn btn-outline-danger btn-sm rounded-0"
             @click="removeAllCartItem()"
-          >
-          Delete All
-          </button>
+          >Delete All</button>
         </div>
         <table class="table text-center">
           <thead>
@@ -55,9 +53,7 @@
                   type="button"
                   class="btn btn-outline-danger btn-sm rounded-0"
                   @click="removeCartItem(item.product.id)"
-                >
-                  Delete
-                </button>
+                >Delete</button>
               </td>
             </tr>
           </tbody>
@@ -83,14 +79,25 @@
         </div>
         <span class="clearBoth"></span>
       </div>
+      <div class="emptyShoppingBag mt-5" v-else>
+      <p class="h2">Shopping Bag</p>
+      <p>You have nothing in your bag.</p>
+      </div>
     </div>
+    <!-- Vue Loading -->
+    <loading :active.sync="isLoading"></loading>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      cart: [],
+      cartTotal: 0,
+      isLoading: false,
+      shoppongBagItems: true,
+    };
   },
   filters: {
     thousandth(num) {
@@ -99,22 +106,23 @@ export default {
       return parts.join('.');
     },
   },
-  props: ['cart', 'cartTotal'],
   methods: {
     removeCartItem(id) {
-      // DELETE api/{uuid}/ec/shopping/{pid}
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/${id}`;
       this.$http.delete(url).then((response) => {
         alert(response.data.message);
-        this.$emit('getcart');
+        this.upload();
+        this.isLoading = false;
       });
     },
     removeAllCartItem() {
-      // DELETE api/{uuid}/ec/shopping/all/product
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/all/product`;
       this.$http.delete(url).then((response) => {
-        console.log(response.data.message);
-        this.$emit('getcart');
+        alert(response.data.message);
+        this.upload();
+        this.isLoading = false;
       });
     },
     quantityUpdata(id, num) {
@@ -122,14 +130,14 @@ export default {
         product: id,
         quantity: num,
       };
-      // PATCH api/{uuid}/ec/shopping
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
       this.$http.patch(url, data).then(() => {
-        this.$emit('getcart');
+        this.upload();
+        this.isLoading = false;
       });
     },
     goingCheckout() {
-      // GET api/{uuid}/ec/shopping
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
       this.$http.get(url).then((response) => {
         if (response.data.data.length === 0) {
@@ -139,14 +147,39 @@ export default {
         }
       });
     },
+    upload() {
+      this.isLoading = true;
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
+      this.$http.get(url).then((response) => {
+        this.cart = response.data.data;
+        this.cartLength = this.cart.length;
+        this.cartTotal = 0;
+        this.cart.forEach((item) => {
+          this.cartTotal += item.product.price * item.quantity;
+        });
+        if (this.cart.length === 0) {
+          this.shoppongBagItems = false;
+        }
+        this.isLoading = false;
+      });
+    },
   },
   created() {
-    this.$emit('getcart');
+    this.upload();
   },
 };
 </script>
 
 <style lang="scss">
+.cart {
+  margin: 70px 0;
+}
+.emptyShoppingBag {
+  width: 100%;
+  padding: 56px 0 40px 0;
+  background-color: rgba(0, 0, 0, 0.03) !important;
+
+}
 #totalcart {
   float: right;
 }

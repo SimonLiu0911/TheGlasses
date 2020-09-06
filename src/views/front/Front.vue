@@ -32,6 +32,14 @@
               <router-link class="nav-link" to="/shop">SHOP</router-link>
             </li>
             <li
+              id="cart"
+              class="nav-item mr-2 ml-2"
+              :class="{ 'active': current === 'cart'}"
+              @click="current = 'cart'"
+            >
+              <router-link class="nav-link" to="/cart">CART</router-link>
+            </li>
+            <li
               id="faq"
               class="nav-item mr-2 ml-2"
               :class="{ 'active': current === 'faq'}"
@@ -55,15 +63,16 @@
     <footer class="footer mt-auto text-center">
       <p>***僅個人練習使用．不做商業用途***</p>
       <p style="font-size: .875rem;">
-        js作品實戰班-2020夏季-第六週作業
-        <br />
-        圖面來源：
+        Vue電商網站
+        <br />圖面來源：
         <a href="https://unsplash.com">Unsplash</a>
         <br />Cover template for
         <a href="https://getbootstrap.com/">Bootstrap</a>
         <br />
       </p>
     </footer>
+    <!-- Vue Loading -->
+    <loading :active.sync="isLoading"></loading>
   </div>
 </template>
 
@@ -73,6 +82,7 @@ export default {
   data() {
     return {
       current: 'about',
+      cartLength: 0,
     };
   },
 };
@@ -84,19 +94,5 @@ export default {
 }
 .navbar-nav__position {
   margin: 0 auto;
-}
-#full__frame__camera .container .category .camera__category__title {
-  font-size: 18px;
-  font-weight: bold;
-  display: inline-block;
-  width: 33.3333%;
-  margin-left: -20px;
-}
-#full__frame__camera .container .category .camera__category__content {
-  font-size: 13px;
-  display: inline-block;
-}
-.footer{
-
 }
 </style>

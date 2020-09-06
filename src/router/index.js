@@ -18,7 +18,11 @@ const routes = [
       },
       {
         path: 'checkout',
-        component: () => import('../views/front/checkout.vue'),
+        component: () => import('../views/front/Checkout.vue'),
+      },
+      {
+        path: 'cart',
+        component: () => import('../views/front/Cart.vue'),
       },
       {
         path: 'FAQ',
