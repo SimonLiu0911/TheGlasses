@@ -1,7 +1,8 @@
 <template>
   <div class="checkout">
     <div id="CheckingPage" class="container">
-      <div class="row">
+      <div class="orderCompleted" v-if="completed">The Order Completed!</div>
+      <div class="row" v-else>
         <div class="col-md-6 p-5 text-left">
           <h3 class="text-center border-bottom mb-4 pb-3">Contact Information</h3>
           <validation-observer v-slot="{ invalid }">
@@ -159,6 +160,8 @@ export default {
         payment: '',
         message: '',
       },
+      orderID: '',
+      completed: false,
       isLoading: false,
     };
   },
@@ -169,9 +172,19 @@ export default {
       return parts.join('.');
     },
   },
+  methods: {
+    createOrder() {
+      this.isLoading = true;
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders`;
+      this.$http.post(url, this.form).then(() => {
+        console.log('訂單已傳送！！！');
+        this.isLoading = false;
+        this.completed = true;
+      });
+    },
+  },
   created() {
     this.isLoading = true;
-    // GET api/{uuid}/ec/shopping
     const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
     this.$http.get(url).then((response) => {
       this.cart = response.data.data;
@@ -217,5 +230,10 @@ export default {
   border-style: solid;
   border-color: gray;
   box-shadow: 0 0 3px gray;
+}
+.orderCompleted{
+  font-size: 36px;
+  padding: 60px;
+  margin: 60px 0;
 }
 </style>
