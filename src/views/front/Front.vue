@@ -83,6 +83,7 @@ export default {
     return {
       current: 'about',
       cartLength: 0,
+      isLoading: false,
     };
   },
 };

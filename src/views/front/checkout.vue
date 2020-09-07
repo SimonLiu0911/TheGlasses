@@ -158,6 +158,7 @@ export default {
         tel: '',
         address: '',
         payment: '',
+        coupon: '',
         message: '',
       },
       orderID: '',

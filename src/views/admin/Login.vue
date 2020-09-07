@@ -3,13 +3,13 @@
     <!-- <Loading :active.sync="isLoading"></Loading> -->
     <div class="container">
       <form class="form-signin" @submit.prevent="signin">
-        <h1 class="h3 mb-3 font-weight-normal">Please Sign in</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
         <div class="form-group">
           <label for="inputEmail" class="sr-only">Email address</label>
           <input
             id="inputEmail"
             type="email"
-            class="form-control rounded-0"
+            class="form-control rounded-0 input_style"
             placeholder="Email address"
             v-model="user.email"
             required
@@ -21,7 +21,7 @@
           <input
             id="inputPassword"
             type="password"
-            class="form-control rounded-0"
+            class="form-control rounded-0 input_style"
             placeholder="Password"
             v-model="user.password"
             required
@@ -36,6 +36,8 @@
         <p class="my-3 text-muted">&copy; 2020~∞ - 練習用</p>
       </form>
     </div>
+    <!-- Vue Loading -->
+    <loading :active.sync="isLoading"></loading>
   </div>
 </template>
 
@@ -47,10 +49,12 @@ export default {
         email: '',
         password: '',
       },
+      isLoading: false,
     };
   },
   methods: {
     signin() {
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_APIPATH}/api/auth/login`;
       this.$http
         .post(url, this.user)
@@ -62,8 +66,9 @@ export default {
           )}; path=/`;
           this.$router.push('/admin/productsmanagement');
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          alert('登入失敗！！！');
+          window.location.reload();
         });
     },
     goBackFront() {
@@ -79,10 +84,14 @@ body {
   height: 100%;
   text-align: center;
 }
-
 .form-signin {
   max-width: 330px;
   padding: 15px;
   margin: auto;
+}
+.input_style:focus {
+  border-style: solid;
+  border-color: gray;
+  box-shadow: 0 0 3px gray;
 }
 </style>

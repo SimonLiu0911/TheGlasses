@@ -1,20 +1,21 @@
 <template>
   <div class="productsmanagement">
-    <div class="product_management container">
-      <Loading :active.sync="isLoading"></Loading>
+    <div class="container">
       <div class="mt-5 clearfix">
         <button
           class="btn btn-outline-dark rounded-0 float-right"
           type="button"
           @click="openModal('new', 0)"
-        >NEW PRODUCT</button>
+        >
+          NEW PRODUCT
+        </button>
         <button
           class="btn btn-dark rounded-0 float-left"
           type="button"
           @click="signout"
         >SIGN OUT</button>
       </div>
-      <table class="table mt-3">
+      <table class="table table-responsive-xl mt-3">
         <thead>
           <tr>
             <th width="50">#</th>
@@ -68,9 +69,10 @@
         </tbody>
       </table>
 
+      <!-- Vue Loading -->
+      <Loading :active.sync="isLoading"></Loading>
       <!-- Pagination -->
       <Pagination :pages="pagination" @update="getProducts"></Pagination>
-
       <!-- New Product Modal -->
       <div
         id="newproductModal"
@@ -82,7 +84,6 @@
       >
         <Newproductmodal @upload="getProducts"></Newproductmodal>
       </div>
-
       <!-- Edit Product Modal -->
       <div
         id="productModal"
@@ -94,7 +95,6 @@
       >
         <Productmodal :temp-product="tempProduct" @update="getProducts"></Productmodal>
       </div>
-
       <!-- Delete Product Modal -->
       <div
         id="delProductModal"

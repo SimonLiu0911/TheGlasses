@@ -42,6 +42,14 @@ const routes = [
         path: '/admin/productsmanagement',
         component: () => import('../views/admin/Productsmanagement.vue'),
       },
+      {
+        path: '/admin/ordersmanagement',
+        component: () => import('../views/admin/Ordersmanagement.vue'),
+      },
+      {
+        path: '/admin/orderdetail/:id',
+        component: () => import('../views/admin/Orderdetail.vue'),
+      },
     ],
   },
 ];
