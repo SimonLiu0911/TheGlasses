@@ -15,21 +15,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav navbar-nav__position">
-            <li id="about" class="nav-item mr-2 ml-2">
-              <router-link
-              class="nav-link"
-              to="/admin/productsmanagement"
-              >
-                ProductList
-              </router-link>
+            <li id="product_list" class="nav-item mr-2 ml-2">
+              <router-link class="nav-link" to="/admin/productsmanagement">ProductList</router-link>
             </li>
-            <li id="about" class="nav-item mr-2 ml-2">
-              <router-link
-              class="nav-link"
-              to="/admin/ordersmanagement"
-              >
-                OrderList
-              </router-link>
+            <li id="order_list" class="nav-item mr-2 ml-2">
+              <router-link class="nav-link" to="/admin/ordersmanagement">OrderList</router-link>
+            </li>
+            <li id="coupon_list" class="nav-item mr-2 ml-2">
+              <router-link class="nav-link" to="/admin/couponsmanagement">CouponList</router-link>
             </li>
           </ul>
         </div>

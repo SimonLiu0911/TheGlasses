@@ -1,6 +1,5 @@
 <template>
   <div class="modal-dialog modal-xl novalidate text-left" role="document">
-    <Loading :active.sync="isLoading"></Loading>
     <div class="modal-content">
       <div class="modal-header border-bottom-0">
         <h5 id="exampleModalLabel" class="modal-title">UpLoad New Product</h5>
@@ -145,6 +144,8 @@
         </div>
       </div>
     </div>
+    <!-- Vue loading -->
+    <Loading :active.sync="isLoading"></Loading>
   </div>
 </template>
 
@@ -165,7 +166,6 @@ export default {
   methods: {
     uploadProduct() {
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product`;
-      // POST api/{uuid}/admin/ec/product
       this.$http.post(url, this.NewProduct).then((response) => {
         $('#newproductModal').modal('hide');
         this.$emit('upload');

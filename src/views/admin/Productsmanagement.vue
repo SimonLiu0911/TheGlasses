@@ -135,7 +135,6 @@ export default {
       },
     };
   },
-  props: ['token'],
   components: {
     Pagination,
     Newproductmodal,
@@ -145,7 +144,6 @@ export default {
   methods: {
     getProducts(num = 1) {
       this.isLoading = true;
-      //  GET api/{uuid}/admin/ec/products
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/products?page=${num}`;
       this.$http.get(url).then((response) => {
         this.products = response.data.data;
@@ -184,7 +182,6 @@ export default {
       }
     },
     patchItem(item) {
-      // PATCH api/{uuid}/admin/ec/product/{id}
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${item.id}`;
       this.$http.patch(url, {
         enabled: !item.enabled,
