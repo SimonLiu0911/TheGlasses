@@ -120,9 +120,16 @@
             <input
               type="text"
               class="form-control rounded-0 input_style"
+              v-model="form.coupon"
               placeholder="Discount Code"
             />
-            <button type="button" class="btn btn-dark rounded-0" disabled>APPLY</button>
+            <button
+              type="button"
+              class="btn btn-dark rounded-0"
+              @click="searchCoupon"
+            >
+              APPLY
+            </button>
           </div>
           <div id="totalcart" class="my-3">
             <div class="totalcart__table">
@@ -131,7 +138,8 @@
                   <tr>
                     <th width="150px">Subtotal</th>
                     <td>
-                      <span>{{ cartTotal | thousandth}}</span>
+                      <span v-if="applyCoupon === false">{{ cartTotal | thousandth}}</span>
+                      <span class="text-danger" v-else>{{ cartTotalafterCoupon | thousandth}}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -152,6 +160,7 @@ export default {
     return {
       cart: {},
       cartTotal: 0,
+      cartTotalafterCoupon: 0,
       form: {
         name: '',
         email: '',
@@ -161,9 +170,11 @@ export default {
         coupon: '',
         message: '',
       },
+      applyCoupon: false,
       orderID: '',
       completed: false,
       isLoading: false,
+      priceAfterCoupon: '',
     };
   },
   filters: {
@@ -181,6 +192,15 @@ export default {
         console.log('訂單已傳送！！！');
         this.isLoading = false;
         this.completed = true;
+      });
+    },
+    searchCoupon() {
+      this.isLoading = true;
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/coupon/search`;
+      this.$http.post(url, { code: this.form.coupon }).then((response) => {
+        this.cartTotalafterCoupon = Math.ceil(this.cartTotal * (response.data.data.percent / 100));
+        this.applyCoupon = true;
+        this.isLoading = false;
       });
     },
   },

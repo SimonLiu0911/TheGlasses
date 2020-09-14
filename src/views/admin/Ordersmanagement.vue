@@ -16,7 +16,6 @@
             <th>#</th>
             <th>Order(id)</th>
             <th>Payment</th>
-            <th>Coupon</th>
             <th>Paid</th>
             <th>Time</th>
             <th>Note</th>
@@ -27,7 +26,6 @@
             <td>{{ index + 1 }}</td>
             <td class="overflow-auto">{{ item.id }}</td>
             <td>{{ item.payment }}</td>
-            <td>{{ item.coupon }}</td>
             <td>
               <span class="text-danger" v-if="item.paid === false">{{ item.paid }}</span>
               <span class="text-success" v-else>{{ item.paid }}</span>
@@ -68,6 +66,7 @@ export default {
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders`;
       this.$http.get(url).then((response) => {
         this.orderList = response.data.data;
+        console.log(this.orderList);
         this.isLoading = false;
       });
     },
