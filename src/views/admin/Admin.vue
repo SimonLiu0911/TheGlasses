@@ -24,6 +24,9 @@
             <li id="coupon_list" class="nav-item mr-2 ml-2">
               <router-link class="nav-link" to="/admin/couponsmanagement">CouponList</router-link>
             </li>
+            <li id="storage_list" class="nav-item mr-2 ml-2">
+              <router-link class="nav-link" to="/admin/storagesmanagement">Storage</router-link>
+            </li>
           </ul>
         </div>
       </div>

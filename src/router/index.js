@@ -58,6 +58,10 @@ const routes = [
         path: '/admin/coupondetail/:id',
         component: () => import('../views/admin/Coupondetail.vue'),
       },
+      {
+        path: '/admin/storagesmanagement',
+        component: () => import('../views/admin/Storagesmanagement.vue'),
+      },
     ],
   },
 ];
