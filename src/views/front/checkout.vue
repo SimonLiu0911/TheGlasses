@@ -138,12 +138,21 @@
                   <tr>
                     <th width="150px">Subtotal</th>
                     <td>
-                      <span v-if="applyCoupon === false">{{ cartTotal | thousandth}}</span>
-                      <span class="text-danger" v-else>{{ cartTotalafterCoupon | thousandth}}</span>
+                      <span v-if="applyCoupon === false">
+                        {{ cartTotal | thousandth}} <em>NT</em>
+                      </span>
+                      <span class="text-danger" v-else>
+                        {{ cartTotalafterCoupon | thousandth}} <em>NT</em>
+                      </span>
                     </td>
                   </tr>
                 </tbody>
               </table>
+              <small class="text-danger" v-if="applyCoupon === true">
+                <em>
+                  saved {{ saveMoney }} NT
+                </em>
+              </small>
             </div>
           </div>
         </div>
@@ -161,6 +170,7 @@ export default {
       cart: {},
       cartTotal: 0,
       cartTotalafterCoupon: 0,
+      saveMoney: 0,
       form: {
         name: '',
         email: '',
@@ -171,6 +181,7 @@ export default {
         message: '',
       },
       applyCoupon: false,
+      couponEnabled: '',
       orderID: '',
       completed: false,
       isLoading: false,
@@ -196,12 +207,36 @@ export default {
     },
     searchCoupon() {
       this.isLoading = true;
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/coupon/search`;
-      this.$http.post(url, { code: this.form.coupon }).then((response) => {
-        this.cartTotalafterCoupon = Math.ceil(this.cartTotal * (response.data.data.percent / 100));
-        this.applyCoupon = true;
+      if (this.form.coupon) {
+        const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/coupon/search`;
+        this.$http.post(url, { code: this.form.coupon }).then((response) => {
+          this.couponEnabled = response.data.data.enabled;
+          if (this.couponEnabled) {
+            this.cartTotalafterCoupon = Math.ceil(
+              this.cartTotal * (response.data.data.percent / 100),
+            );
+            this.saveMoney = this.cartTotal - this.cartTotalafterCoupon;
+            this.applyCoupon = true;
+            this.isLoading = false;
+          } else {
+            alert("Can't Use Coupon Code.");
+            this.form.coupon = '';
+            this.applyCoupon = false;
+            this.isLoading = false;
+          }
+        })
+          .catch(() => {
+            alert('Not Exist!!');
+            this.form.coupon = '';
+            this.applyCoupon = false;
+            this.isLoading = false;
+          });
+      } else {
+        alert('Need Coupon Code!!');
+        this.form.coupon = '';
+        this.applyCoupon = false;
         this.isLoading = false;
-      });
+      }
     },
   },
   created() {

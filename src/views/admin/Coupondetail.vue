@@ -20,7 +20,7 @@
             <span class="text-success" v-if="this.couponDetail.enabled === true">Active</span>
             <span class="text-danger" v-if="this.couponDetail.enabled === false">Unactive</span>
           </div>
-  mt-5       </div>
+        </div>
         <div class="col-md-6 px-5 pb-3">
           <div class="order_payment mb-3">
             <p class="font-weight-bold mb-0">Created:</p>
@@ -70,7 +70,6 @@ export default {
       this.isLoading = true;
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${this.couponID}`;
       this.$http.delete(url).then(() => {
-        console.log('已刪除');
         this.$router.push('/admin/couponsmanagement');
       })
         .catch((error) => {
