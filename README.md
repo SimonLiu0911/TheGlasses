@@ -11,7 +11,11 @@ https://simonliu0911.github.io/TheGlasses/#/
 切換瀏覽方式、商品排序\
 優換券\
     開放：C7D8K3JD\
+<<<<<<< HEAD
     未開放：SJ8I0NSH\
+=======
+    未開放：SJ8I0NSH
+>>>>>>> c087460aa5420991f87c53484f1d79556d3f4686
 
 ### 後台:
 登入\
