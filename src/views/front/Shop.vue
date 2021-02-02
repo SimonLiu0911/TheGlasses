@@ -36,7 +36,7 @@
     </div>
 
     <!-- Vue Loading -->
-    <loading :active.sync="isLoading"></loading>
+    <loading :active.sync="this.$store.state.isLoading"></loading>
     <!-- Pagination -->
     <Pagination :pages="pagination" @update="getFrontProducts"></Pagination>
     <!-- Product Detail Modal -->
@@ -46,7 +46,7 @@
 
 <script>
 import $ from 'jquery';
-import Pagination from '../../components/Pagination.vue';
+import Pagination from '../../components/common/Pagination.vue';
 import Productdetail from '../../components/front/ProductDetail.vue';
 
 export default {
@@ -55,7 +55,6 @@ export default {
       products: [],
       pagination: {},
       tempProduct: {},
-      isLoading: false,
     };
   },
   components: {
@@ -71,36 +70,36 @@ export default {
   },
   methods: {
     getFrontProducts(page = 1) {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       // GET api/{uuid}/ec/products
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/products?page=${page}`;
       this.$http.get(url).then((response) => {
         this.products = response.data.data;
         this.pagination = response.data.meta.pagination;
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
     getDetailed(item) {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/product/${item.id}`;
       this.$http.get(url).then((response) => {
         this.tempProduct = response.data.data;
         $('#productModal').modal('show');
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
     addToCart(item, quantity = 1) {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const cart = {
         product: item.id,
         quantity,
       };
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
       this.$http.post(url, cart).then(() => {
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
         $('#productModal').modal('hide');
       }).catch((error) => {
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
         alert(error.response.data.errors[0]);
         $('#productModal').modal('hide');
       });

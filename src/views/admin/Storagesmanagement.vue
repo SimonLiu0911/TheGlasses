@@ -34,7 +34,7 @@
       </div>
     </div>
     <!-- Vue Loading -->
-    <Loading :active.sync="isLoading"></Loading>
+    <Loading :active.sync="this.$store.state.isLoading"></Loading>
   </div>
 </template>
 
@@ -43,25 +43,24 @@ export default {
   data() {
     return {
       storages: [],
-      isLoading: true,
     };
   },
 
   methods: {
     getFiles() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/storage`;
       this.$http.get(url).then((response) => {
         this.storages = response.data.data;
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
     deleteImg(id) {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/storage/${id}`;
       this.$http.delete(url).then(() => {
         this.getFiles();
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
   },

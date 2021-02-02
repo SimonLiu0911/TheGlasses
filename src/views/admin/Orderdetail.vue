@@ -65,7 +65,7 @@
       </table>
     </div>
     <!-- Vue Loading -->
-    <loading :active.sync="isLoading"></loading>
+    <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
 
@@ -78,12 +78,11 @@ export default {
       orderProducts: [],
       orderDate: '',
       orderUser: {},
-      isLoading: false,
     };
   },
   methods: {
     getorderUser() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       this.orderID = this.$route.params.id;
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders/${this.orderID}`;
       this.$http.get(url).then((response) => {
@@ -91,7 +90,7 @@ export default {
         this.orderDate = response.data.data.created.datetime;
         this.orderUser = response.data.data.user;
         this.orderProducts = response.data.data.products;
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
   },

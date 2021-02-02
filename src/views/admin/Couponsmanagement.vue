@@ -94,7 +94,7 @@
       </div>
     </div>
     <!-- Vue loading -->
-    <Loading :active.sync="isLoading"></Loading>
+    <Loading :active.sync="this.$store.state.isLoading"></Loading>
   </div>
 </template>
 
@@ -107,7 +107,6 @@ export default {
         percent: 0,
         enabled: false,
       },
-      isLoading: false,
     };
   },
   computed: {
@@ -117,15 +116,15 @@ export default {
   },
   methods: {
     update() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupons`;
       this.$http.get(url).then((response) => {
         this.couponList = response.data.data;
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
     addnewCoupon() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon`;
       this.$http.post(url, this.newCoupon).then(() => {
         this.update();
@@ -133,7 +132,7 @@ export default {
           percent: 0,
           enabled: false,
         };
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
   },

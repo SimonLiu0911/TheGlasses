@@ -70,7 +70,7 @@
       </table>
 
       <!-- Vue Loading -->
-      <Loading :active.sync="isLoading"></Loading>
+      <Loading :active.sync="this.$store.state.isLoading"></Loading>
       <!-- Pagination -->
       <Pagination :pages="pagination" @update="getProducts"></Pagination>
       <!-- New Product Modal -->
@@ -117,7 +117,7 @@
 
 <script>
 import $ from 'jquery';
-import Pagination from '../../components/Pagination.vue';
+import Pagination from '../../components/common/Pagination.vue';
 import Newproductmodal from '../../components/admin/Newproductmodal.vue';
 import Productmodal from '../../components/admin/Productmodal.vue';
 import Delproductmodal from '../../components/admin/Delproductmodal.vue';
@@ -125,7 +125,6 @@ import Delproductmodal from '../../components/admin/Delproductmodal.vue';
 export default {
   data() {
     return {
-      isLoading: false,
       products: [],
       lockingBtn: '',
       deleteBtn: '',
@@ -143,7 +142,7 @@ export default {
   },
   methods: {
     getProducts(num = 1) {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/products?page=${num}`;
       this.$http.get(url).then((response) => {
         this.products = response.data.data;
@@ -154,7 +153,7 @@ export default {
           };
           $('#productModal').modal('hide');
         }
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
     openModal(isNew, item) {
@@ -164,12 +163,12 @@ export default {
           $('#newproductModal').modal('show');
           break;
         case 'edit':
-          this.isLoading = true;
+          this.$store.commit('isLoading');
           this.lockingBtn = item.id;
           this.$http.get(url).then((response) => {
             this.tempProduct = response.data.data;
             $('#productModal').modal('show');
-            this.isLoading = false;
+            this.$store.commit('finishedLoading');
           });
           break;
         case 'delete':

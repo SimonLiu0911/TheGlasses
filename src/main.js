@@ -12,6 +12,8 @@ import VueAxios from 'vue-axios';
 import { ValidationProvider, ValidationObserver, configure } from 'vee-validate/dist/vee-validate.full';
 import App from './App.vue';
 import router from './router';
+// Vuex
+import store from './store';
 
 Vue.config.productionTip = false;
 
@@ -32,5 +34,6 @@ configure({
 
 new Vue({
   router,
+  store,
   render: (h) => h(App),
 }).$mount('#app');

@@ -44,7 +44,7 @@
       </table>
     </div>
     <!-- Vue Loading -->
-    <loading :active.sync="isLoading"></loading>
+    <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
 
@@ -52,7 +52,6 @@
 export default {
   data() {
     return {
-      isLoading: false,
       orderList: [],
     };
   },
@@ -62,12 +61,12 @@ export default {
       this.$router.push('/admin/login');
     },
     getOrderData() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders`;
       this.$http.get(url).then((response) => {
         this.orderList = response.data.data;
         console.log(this.orderList);
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
   },

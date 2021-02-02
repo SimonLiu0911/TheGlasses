@@ -159,7 +159,7 @@
       </div>
     </div>
     <!-- Vue Loading -->
-    <loading :active.sync="isLoading"></loading>
+    <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
 
@@ -184,7 +184,6 @@ export default {
       couponEnabled: '',
       orderID: '',
       completed: false,
-      isLoading: false,
       priceAfterCoupon: '',
     };
   },
@@ -197,16 +196,16 @@ export default {
   },
   methods: {
     createOrder() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders`;
       this.$http.post(url, this.form).then(() => {
         console.log('訂單已傳送！！！');
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
         this.completed = true;
       });
     },
     searchCoupon() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       if (this.form.coupon) {
         const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/coupon/search`;
         this.$http.post(url, { code: this.form.coupon }).then((response) => {
@@ -217,36 +216,36 @@ export default {
             );
             this.saveMoney = this.cartTotal - this.cartTotalafterCoupon;
             this.applyCoupon = true;
-            this.isLoading = false;
+            this.$store.commit('finishedLoading');
           } else {
             alert("Can't Use Coupon Code.");
             this.form.coupon = '';
             this.applyCoupon = false;
-            this.isLoading = false;
+            this.$store.commit('finishedLoading');
           }
         })
           .catch(() => {
             alert('Not Exist!!');
             this.form.coupon = '';
             this.applyCoupon = false;
-            this.isLoading = false;
+            this.$store.commit('finishedLoading');
           });
       } else {
         alert('Need Coupon Code!!');
         this.form.coupon = '';
         this.applyCoupon = false;
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       }
     },
   },
   created() {
-    this.isLoading = true;
+    this.$store.commit('isLoading');
     const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
     this.$http.get(url).then((response) => {
       this.cart = response.data.data;
       this.cart.forEach((item) => {
         this.cartTotal += item.product.price * item.quantity;
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     });
   },

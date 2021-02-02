@@ -85,7 +85,7 @@
       </div>
     </div>
     <!-- Vue Loading -->
-    <loading :active.sync="isLoading"></loading>
+    <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
 
@@ -95,7 +95,6 @@ export default {
     return {
       cart: [],
       cartTotal: 0,
-      isLoading: false,
       shoppongBagItems: true,
     };
   },
@@ -108,21 +107,21 @@ export default {
   },
   methods: {
     removeCartItem(id) {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/${id}`;
       this.$http.delete(url).then((response) => {
         alert(response.data.message);
         this.upload();
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
     removeAllCartItem() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/all/product`;
       this.$http.delete(url).then((response) => {
         alert(response.data.message);
         this.upload();
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
     quantityUpdata(id, num) {
@@ -130,11 +129,11 @@ export default {
         product: id,
         quantity: num,
       };
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
       this.$http.patch(url, data).then(() => {
         this.upload();
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
     goingCheckout() {
@@ -148,7 +147,7 @@ export default {
       });
     },
     upload() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
       this.$http.get(url).then((response) => {
         this.cart = response.data.data;
@@ -160,7 +159,7 @@ export default {
         if (this.cart.length === 0) {
           this.shoppongBagItems = false;
         }
-        this.isLoading = false;
+        this.$store.commit('finishedLoading');
       });
     },
   },

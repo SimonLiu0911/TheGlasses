@@ -48,7 +48,7 @@
       </div>
     </div>
     <!-- Vue loading -->
-    <Loading :active.sync="isLoading"></Loading>
+    <Loading :active.sync="this.$store.state.isLoading"></Loading>
   </div>
 </template>
 
@@ -56,7 +56,6 @@
 export default {
   data() {
     return {
-      isLoading: false,
       couponDetail: {},
       couponCreated: '',
       couponDeadline: '',
@@ -67,14 +66,14 @@ export default {
   },
   methods: {
     deleteCoupon() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${this.couponID}`;
       this.$http.delete(url).then(() => {
         this.$router.push('/admin/couponsmanagement');
       })
         .catch((error) => {
           alert(error.response);
-          this.isLoading = false;
+          this.$store.commit('finishedLoading');
         });
     },
   },

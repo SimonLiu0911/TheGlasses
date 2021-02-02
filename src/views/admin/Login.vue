@@ -37,7 +37,7 @@
       </form>
     </div>
     <!-- Vue Loading -->
-    <loading :active.sync="isLoading"></loading>
+    <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
 
@@ -49,12 +49,11 @@ export default {
         email: '',
         password: '',
       },
-      isLoading: false,
     };
   },
   methods: {
     signin() {
-      this.isLoading = true;
+      this.$store.commit('isLoading');
       const url = `${process.env.VUE_APP_APIPATH}/api/auth/login`;
       this.$http
         .post(url, this.user)
