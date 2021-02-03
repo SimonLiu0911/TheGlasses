@@ -31,13 +31,13 @@ const routes = [
     ],
   },
   {
+    path: '/login',
+    component: () => import('../views/admin/Login.vue'),
+  },
+  {
     path: '/admin',
     component: () => import('../views/admin/Admin.vue'),
     children: [
-      {
-        path: '/admin/login',
-        component: () => import('../views/admin/Login.vue'),
-      },
       {
         path: '/admin/productsmanagement',
         component: () => import('../views/admin/Productsmanagement.vue'),
@@ -63,6 +63,10 @@ const routes = [
         component: () => import('../views/admin/Storagesmanagement.vue'),
       },
     ],
+  },
+  {
+    path: '*',
+    component: () => import('../views/404.vue'),
   },
 ];
 

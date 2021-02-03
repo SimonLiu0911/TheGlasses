@@ -13,7 +13,9 @@
           class="btn btn-dark rounded-0 float-left"
           type="button"
           @click="signout"
-        >SIGN OUT</button>
+        >
+          SIGN OUT
+        </button>
       </div>
       <table class="table table-responsive-xl mt-3">
         <thead>
@@ -49,7 +51,9 @@
                 <button
                   class="btn btn-outline-dark btn-sm rounded-0"
                   @click="openModal('edit', item)"
-                >Edit</button>
+                >
+                  Edit
+                </button>
                 <button
                   class="btn btn-outline-danger btn-sm rounded-0"
                   @click="openModal('delete', item)"
@@ -93,7 +97,10 @@
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <Productmodal :temp-product="tempProduct" @update="getProducts"></Productmodal>
+        <Productmodal
+          :temp-product="tempProduct"
+          @update="getProducts"
+        ></Productmodal>
       </div>
       <!-- Delete Product Modal -->
       <div
@@ -182,18 +189,20 @@ export default {
     },
     patchItem(item) {
       const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${item.id}`;
-      this.$http.patch(url, {
-        enabled: !item.enabled,
-      }).then((response) => {
-        console.log(response.data.data.enabled);
-      });
+      this.$http
+        .patch(url, {
+          enabled: !item.enabled,
+        })
+        .then((response) => {
+          console.log(response.data.data.enabled);
+        });
     },
     unactiveloading() {
       this.deleteBtn = '';
     },
     signout() {
       document.cookie = 'myToken=;expires=;';
-      this.$router.push('/admin/login');
+      this.$router.push('/login');
     },
   },
   created() {

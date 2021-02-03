@@ -52,7 +52,7 @@
             :class="{ active: current === 'admin' }"
             @click="current = 'admin'"
           >
-            <router-link class="nav-link" to="/admin/login">ADMIN</router-link>
+            <router-link class="nav-link" to="/login">ADMIN</router-link>
           </li>
         </ul>
       </div>
@@ -69,3 +69,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.navbar__border {
+  border-bottom: 1px solid black;
+}
+.navbar-nav__position {
+  margin: 0 auto;
+}
+</style>
