@@ -1,3 +1,33 @@
+<script>
+import $ from 'jquery';
+
+export default {
+  name: 'Newproductmodel',
+  data() {
+    return {
+      NewProduct: {
+        imageUrl: [],
+      },
+      disabledBtn: '',
+      isLoading: false,
+    };
+  },
+  methods: {
+    uploadProduct() {
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product`;
+      this.$http.post(url, this.NewProduct).then((response) => {
+        $('#newproductModal').modal('hide');
+        this.$emit('upload');
+        console.log(response);
+      });
+    },
+  },
+  created() {
+    this.$emit('upload');
+  },
+};
+</script>
+
 <template>
   <div class="modal-dialog modal-xl novalidate text-left" role="document">
     <div class="modal-content">
@@ -149,32 +179,8 @@
   </div>
 </template>
 
-<script>
-import $ from 'jquery';
-
-export default {
-  name: 'Newproductmodel',
-  data() {
-    return {
-      NewProduct: {
-        imageUrl: [],
-      },
-      disabledBtn: '',
-      isLoading: false,
-    };
-  },
-  methods: {
-    uploadProduct() {
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product`;
-      this.$http.post(url, this.NewProduct).then((response) => {
-        $('#newproductModal').modal('hide');
-        this.$emit('upload');
-        console.log(response);
-      });
-    },
-  },
-  created() {
-    this.$emit('upload');
-  },
-};
-</script>
+<style lang="scss" scoped>
+textarea {
+  resize:none;
+}
+</style>

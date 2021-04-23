@@ -1,3 +1,43 @@
+<script>
+export default {
+  data() {
+    return {
+      couponDetail: {},
+      couponCreated: '',
+      couponDeadline: '',
+      couponUpdated: '',
+      couponID: '',
+      editing: false,
+    };
+  },
+  methods: {
+    deleteCoupon() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${this.couponID}`;
+      this.$http.delete(url).then(() => {
+        this.$router.push('/admin/couponsmanagement');
+      })
+        .catch((error) => {
+          alert(error.response);
+          this.$store.commit('finishedLoading');
+        });
+    },
+  },
+  created() {
+    const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
+    this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
+    this.couponID = this.$route.params.id;
+    const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${this.couponID}`;
+    this.$http.get(url).then((response) => {
+      this.couponDetail = response.data.data;
+      this.couponCreated = response.data.data.created.datetime;
+      this.couponDeadline = response.data.data.deadline.datetime;
+      this.couponUpdated = response.data.data.updated.datetime;
+    });
+  },
+};
+</script>
+
 <template>
   <div class="coupondetail">
     <div class="container text-left mt-5">
@@ -51,43 +91,3 @@
     <Loading :active.sync="this.$store.state.isLoading"></Loading>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      couponDetail: {},
-      couponCreated: '',
-      couponDeadline: '',
-      couponUpdated: '',
-      couponID: '',
-      editing: false,
-    };
-  },
-  methods: {
-    deleteCoupon() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${this.couponID}`;
-      this.$http.delete(url).then(() => {
-        this.$router.push('/admin/couponsmanagement');
-      })
-        .catch((error) => {
-          alert(error.response);
-          this.$store.commit('finishedLoading');
-        });
-    },
-  },
-  created() {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
-    this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
-    this.couponID = this.$route.params.id;
-    const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${this.couponID}`;
-    this.$http.get(url).then((response) => {
-      this.couponDetail = response.data.data;
-      this.couponCreated = response.data.data.created.datetime;
-      this.couponDeadline = response.data.data.deadline.datetime;
-      this.couponUpdated = response.data.data.updated.datetime;
-    });
-  },
-};
-</script>

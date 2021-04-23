@@ -1,3 +1,37 @@
+<script>
+export default {
+  data() {
+    return {
+      storages: [],
+    };
+  },
+
+  methods: {
+    getFiles() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/storage`;
+      this.$http.get(url).then((response) => {
+        this.storages = response.data.data;
+        this.$store.commit('finishedLoading');
+      });
+    },
+    deleteImg(id) {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/storage/${id}`;
+      this.$http.delete(url).then(() => {
+        this.getFiles();
+        this.$store.commit('finishedLoading');
+      });
+    },
+  },
+  created() {
+    const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
+    this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
+    this.getFiles();
+  },
+};
+</script>
+
 <template>
   <div class="storagesmanagement">
     <div class="container">
@@ -37,40 +71,6 @@
     <Loading :active.sync="this.$store.state.isLoading"></Loading>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      storages: [],
-    };
-  },
-
-  methods: {
-    getFiles() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/storage`;
-      this.$http.get(url).then((response) => {
-        this.storages = response.data.data;
-        this.$store.commit('finishedLoading');
-      });
-    },
-    deleteImg(id) {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/storage/${id}`;
-      this.$http.delete(url).then(() => {
-        this.getFiles();
-        this.$store.commit('finishedLoading');
-      });
-    },
-  },
-  created() {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
-    this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
-    this.getFiles();
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 .storagesmanagement {

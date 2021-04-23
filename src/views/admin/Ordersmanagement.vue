@@ -1,3 +1,31 @@
+<script>
+export default {
+  data() {
+    return {
+      orderList: [],
+    };
+  },
+  methods: {
+    signout() {
+      document.cookie = 'myToken=;expires=;';
+      this.$router.push('/admin/login');
+    },
+    getOrderData() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders`;
+      this.$http.get(url).then((response) => {
+        this.orderList = response.data.data;
+        console.log(this.orderList);
+        this.$store.commit('finishedLoading');
+      });
+    },
+  },
+  created() {
+    this.getOrderData();
+  },
+};
+</script>
+
 <template>
   <div class="ordermanagement">
     <div class="orders_management container">
@@ -47,31 +75,3 @@
     <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      orderList: [],
-    };
-  },
-  methods: {
-    signout() {
-      document.cookie = 'myToken=;expires=;';
-      this.$router.push('/admin/login');
-    },
-    getOrderData() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders`;
-      this.$http.get(url).then((response) => {
-        this.orderList = response.data.data;
-        console.log(this.orderList);
-        this.$store.commit('finishedLoading');
-      });
-    },
-  },
-  created() {
-    this.getOrderData();
-  },
-};
-</script>

@@ -1,3 +1,83 @@
+<script>
+export default {
+  data() {
+    return {
+      cart: [],
+      cartTotal: 0,
+      shoppongBagItems: true,
+    };
+  },
+  filters: {
+    thousandth(num) {
+      const parts = num.toString().split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.');
+    },
+  },
+  methods: {
+    removeCartItem(id) {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/${id}`;
+      this.$http.delete(url).then((response) => {
+        alert(response.data.message);
+        this.upload();
+        this.$store.commit('finishedLoading');
+      });
+    },
+    removeAllCartItem() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/all/product`;
+      this.$http.delete(url).then((response) => {
+        alert(response.data.message);
+        this.upload();
+        this.$store.commit('finishedLoading');
+      });
+    },
+    quantityUpdata(id, num) {
+      const data = {
+        product: id,
+        quantity: num,
+      };
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
+      this.$http.patch(url, data).then(() => {
+        this.upload();
+        this.$store.commit('finishedLoading');
+      });
+    },
+    goingCheckout() {
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
+      this.$http.get(url).then((response) => {
+        if (response.data.data.length === 0) {
+          alert('Please choose at least one commodity!');
+        } else {
+          this.$router.push('checkout');
+        }
+      });
+    },
+    upload() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
+      this.$http.get(url).then((response) => {
+        this.cart = response.data.data;
+        this.cartLength = this.cart.length;
+        this.cartTotal = 0;
+        this.cart.forEach((item) => {
+          this.cartTotal += item.product.price * item.quantity;
+        });
+        if (this.cart.length === 0) {
+          this.shoppongBagItems = false;
+        }
+        this.$store.commit('finishedLoading');
+      });
+    },
+  },
+  created() {
+    this.upload();
+  },
+};
+</script>
+
 <template>
   <div class="cart">
     <div class="row justify-content-center my-2">
@@ -88,86 +168,6 @@
     <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      cart: [],
-      cartTotal: 0,
-      shoppongBagItems: true,
-    };
-  },
-  filters: {
-    thousandth(num) {
-      const parts = num.toString().split('.');
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      return parts.join('.');
-    },
-  },
-  methods: {
-    removeCartItem(id) {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/${id}`;
-      this.$http.delete(url).then((response) => {
-        alert(response.data.message);
-        this.upload();
-        this.$store.commit('finishedLoading');
-      });
-    },
-    removeAllCartItem() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/all/product`;
-      this.$http.delete(url).then((response) => {
-        alert(response.data.message);
-        this.upload();
-        this.$store.commit('finishedLoading');
-      });
-    },
-    quantityUpdata(id, num) {
-      const data = {
-        product: id,
-        quantity: num,
-      };
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-      this.$http.patch(url, data).then(() => {
-        this.upload();
-        this.$store.commit('finishedLoading');
-      });
-    },
-    goingCheckout() {
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-      this.$http.get(url).then((response) => {
-        if (response.data.data.length === 0) {
-          alert('Please choose at least one commodity!');
-        } else {
-          this.$router.push('checkout');
-        }
-      });
-    },
-    upload() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-      this.$http.get(url).then((response) => {
-        this.cart = response.data.data;
-        this.cartLength = this.cart.length;
-        this.cartTotal = 0;
-        this.cart.forEach((item) => {
-          this.cartTotal += item.product.price * item.quantity;
-        });
-        if (this.cart.length === 0) {
-          this.shoppongBagItems = false;
-        }
-        this.$store.commit('finishedLoading');
-      });
-    },
-  },
-  created() {
-    this.upload();
-  },
-};
-</script>
 
 <style lang="scss">
 .cart {

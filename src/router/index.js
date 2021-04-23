@@ -1,16 +1,20 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+// import lazyLoadView from './lazyload-view';
 
 Vue.use(VueRouter);
 
 const routes = [
+  // 前台頁面
   {
     path: '/',
     component: () => import('../views/front/Front.vue'),
+    // conponent: () => lazyLoadView(import('../views/front/Front')),
     children: [
       {
         path: '',
         component: () => import('../views/front/About.vue'),
+        // component: () => lazyLoadView(import('../views/front/About')),
       },
       {
         path: 'shop',
@@ -30,43 +34,48 @@ const routes = [
       },
     ],
   },
+  // 登入頁面
   {
     path: '/login',
     component: () => import('../views/admin/Login.vue'),
+    // conponent: () => lazyLoadView(import('../views/admin/Login.vue')),
   },
+  // 後台頁面
   {
     path: '/admin',
     component: () => import('../views/admin/Admin.vue'),
     children: [
       {
-        path: '/admin/productsmanagement',
+        path: 'productsmanagement',
         component: () => import('../views/admin/Productsmanagement.vue'),
       },
       {
-        path: '/admin/ordersmanagement',
+        path: 'ordersmanagement',
         component: () => import('../views/admin/Ordersmanagement.vue'),
       },
       {
-        path: '/admin/orderdetail/:id',
+        path: 'orderdetail/:id',
         component: () => import('../views/admin/Orderdetail.vue'),
       },
       {
-        path: '/admin/couponsmanagement',
+        path: 'couponsmanagement',
         component: () => import('../views/admin/Couponsmanagement.vue'),
       },
       {
-        path: '/admin/coupondetail/:id',
+        path: 'coupondetail/:id',
         component: () => import('../views/admin/Coupondetail.vue'),
       },
       {
-        path: '/admin/storagesmanagement',
+        path: 'storagesmanagement',
         component: () => import('../views/admin/Storagesmanagement.vue'),
       },
     ],
   },
+  // 錯誤頁面
   {
     path: '*',
-    component: () => import('../views/404.vue'),
+    component: () => import('../views/404'),
+    // conponent: () => lazyLoadView(import('../views/404')),
   },
 ];
 

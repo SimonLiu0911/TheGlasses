@@ -1,3 +1,29 @@
+<script>
+import $ from 'jquery';
+
+export default {
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
+  props: ['tempProduct'],
+  methods: {
+    updateProduct() {
+      this.isLoading = true;
+      // PATCH api/{uuid}/admin/ec/product/{id}
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${this.tempProduct.id}`;
+      this.$http.patch(url, this.tempProduct).then(() => {
+        // console.log(response);
+        $('#productModal').modal('hide');
+        this.$emit('update');
+        this.isLoading = false;
+      });
+    },
+  },
+};
+</script>
+
 <template>
   <div class="modal-dialog modal-xl text-left" role="document">
     <div class="modal-content">
@@ -137,28 +163,8 @@
   </div>
 </template>
 
-<script>
-import $ from 'jquery';
-
-export default {
-  data() {
-    return {
-      isLoading: false,
-    };
-  },
-  props: ['tempProduct'],
-  methods: {
-    updateProduct() {
-      this.isLoading = true;
-      // PATCH api/{uuid}/admin/ec/product/{id}
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${this.tempProduct.id}`;
-      this.$http.patch(url, this.tempProduct).then(() => {
-        // console.log(response);
-        $('#productModal').modal('hide');
-        this.$emit('update');
-        this.isLoading = false;
-      });
-    },
-  },
-};
-</script>
+<style lang="scss" scoped>
+textarea {
+  resize:none;
+}
+</style>

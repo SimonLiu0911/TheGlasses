@@ -1,3 +1,22 @@
+<script>
+import General from '../../components/front/FAQ_general.vue';
+import Discountcode from '../../components/front/FAQ_discountcode.vue';
+
+export default {
+  data() {
+    return {
+      view: 'general',
+    };
+  },
+  components: { General, Discountcode },
+  methods: {
+    changeView(viewName) {
+      this.view = viewName;
+    },
+  },
+};
+</script>
+
 <template>
   <div class="faq">
     <div class="needHelp mb-3">
@@ -30,25 +49,6 @@
     <component :is="view"></component>
   </div>
 </template>
-
-<script>
-import General from '../../components/front/FAQ_general.vue';
-import Discountcode from '../../components/front/FAQ_discountcode.vue';
-
-export default {
-  data() {
-    return {
-      view: 'general',
-    };
-  },
-  components: { General, Discountcode },
-  methods: {
-    changeView(viewName) {
-      this.view = viewName;
-    },
-  },
-};
-</script>
 
 <style lang="scss">
 .needHelp {

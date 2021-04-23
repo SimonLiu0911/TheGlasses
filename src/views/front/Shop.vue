@@ -1,53 +1,6 @@
-<template>
-  <div class="shop">
-    <div class="container my-2">
-      <div class="row">
-        <div class="col-md-4 col-sm-6 mb-4" v-for="item in products" :key="item.id">
-          <div class="card border-0 bg-white">
-            <img :src="item.imageUrl" class="card-img-top commidity_img" alt />
-            <div class="card-body">
-              <h5 class="card-title">{{ item.title }}</h5>
-              <p class="card-text">{{ item.content }}</p>
-              <div class="d-flex justify-content-between align-items-baseline">
-                <div class="h5" v-if="!item.price">{{ item.origin_price | thousandth }} 元</div>
-                <div v-else>
-                  <del class="h6">Price: {{ item.origin_price | thousandth }} {{ item.unit }}</del>
-                  <div
-                    class="h5 text-danger"
-                  >Now just only {{ item.price | thousandth }} {{ item.unit }}</div>
-                </div>
-              </div>
-            </div>
-            <div class="card-footer d-flex border-0 bg-white">
-              <button
-                type="button"
-                class="btn btn-outline-secondary btn-sm rounded-0"
-                @click="getDetailed(item)"
-              >Detail</button>
-              <button
-                type="button"
-                class="btn btn-outline-danger btn-sm ml-auto rounded-0"
-                @click="addToCart(item)"
-              >Add to Cart</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Vue Loading -->
-    <loading :active.sync="this.$store.state.isLoading"></loading>
-    <!-- Pagination -->
-    <Pagination :pages="pagination" @update="getFrontProducts"></Pagination>
-    <!-- Product Detail Modal -->
-    <Productdetail :temp-product="tempProduct" @addtocart="addToCart"></Productdetail>
-  </div>
-</template>
-
 <script>
 import $ from 'jquery';
-import Pagination from '../../components/common/Pagination.vue';
-import Productdetail from '../../components/front/ProductDetail.vue';
+import lazyloadView from '@/router/lazyload-view';
 
 export default {
   data() {
@@ -58,8 +11,8 @@ export default {
     };
   },
   components: {
-    Pagination,
-    Productdetail,
+    Pagination: () => lazyloadView(import('@/components/common/Pagination.vue')),
+    Productdetail: () => lazyloadView(import('@/components/front/ProductDetail.vue')),
   },
   filters: {
     thousandth(num) {
@@ -110,3 +63,49 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="shop">
+    <div class="container my-2">
+      <div class="row">
+        <div class="col-md-4 col-sm-6 mb-4" v-for="item in products" :key="item.id">
+          <div class="card border-0 bg-white">
+            <img :src="item.imageUrl" class="card-img-top commidity_img" alt />
+            <div class="card-body">
+              <h5 class="card-title">{{ item.title }}</h5>
+              <p class="card-text">{{ item.content }}</p>
+              <div class="d-flex justify-content-between align-items-baseline">
+                <div class="h5" v-if="!item.price">{{ item.origin_price | thousandth }} 元</div>
+                <div v-else>
+                  <del class="h6">Price: {{ item.origin_price | thousandth }} {{ item.unit }}</del>
+                  <div
+                    class="h5 text-danger"
+                  >Now just only {{ item.price | thousandth }} {{ item.unit }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer d-flex border-0 bg-white">
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm rounded-0"
+                @click="getDetailed(item)"
+              >Detail</button>
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm ml-auto rounded-0"
+                @click="addToCart(item)"
+              >Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vue Loading -->
+    <loading :active.sync="this.$store.state.isLoading"></loading>
+    <!-- Pagination -->
+    <Pagination :pages="pagination" @update="getFrontProducts"></Pagination>
+    <!-- Product Detail Modal -->
+    <Productdetail :temp-product="tempProduct" @addtocart="addToCart"></Productdetail>
+  </div>
+</template>

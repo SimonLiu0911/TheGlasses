@@ -1,3 +1,97 @@
+<script>
+import $ from 'jquery';
+import lazyloadView from '@/router/lazyload-view';
+
+export default {
+  data() {
+    return {
+      products: [],
+      lockingBtn: '',
+      deleteBtn: '',
+      pagination: {},
+      tempProduct: {
+        imageUrl: [],
+      },
+    };
+  },
+  components: {
+    Pagination: () => lazyloadView(import('@/components/common/Pagination.vue')),
+    Newproductmodal: () => lazyloadView(import('@/components/admin/Newproductmodal.vue')),
+    Productmodal: () => lazyloadView(import('@/components/admin/Productmodal.vue')),
+    Delproductmodal: () => lazyloadView(import('@/components/admin/Delproductmodal.vue')),
+  },
+  methods: {
+    getProducts(num = 1) {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/products?page=${num}`;
+      this.$http.get(url).then((response) => {
+        this.products = response.data.data;
+        this.pagination = response.data.meta.pagination;
+        if (this.tempProduct.id) {
+          this.tempProduct = {
+            imageUrl: [],
+          };
+          $('#productModal').modal('hide');
+        }
+        this.$store.commit('finishedLoading');
+      });
+    },
+    openModal(isNew, item) {
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${item.id}`;
+      switch (isNew) {
+        case 'new':
+          $('#newproductModal').modal('show');
+          break;
+        case 'edit':
+          this.$store.commit('isLoading');
+          this.lockingBtn = item.id;
+          this.$http.get(url).then((response) => {
+            this.tempProduct = response.data.data;
+            $('#productModal').modal('show');
+            this.$store.commit('finishedLoading');
+          });
+          break;
+        case 'delete':
+          this.deleteBtn = item.id;
+          $('#delProductModal').modal('show');
+          this.tempProduct = { ...item };
+          break;
+        default:
+          break;
+      }
+    },
+    patchItem(item) {
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${item.id}`;
+      this.$http
+        .patch(url, {
+          enabled: !item.enabled,
+        })
+        .then((response) => {
+          console.log(response.data.data.enabled);
+        });
+    },
+    unactiveloading() {
+      this.deleteBtn = '';
+    },
+    signout() {
+      document.cookie = 'myToken=;expires=;';
+      this.$router.push('/login');
+    },
+  },
+  created() {
+    const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
+    this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
+    this.getProducts();
+  },
+  mounted() {
+    this.getProducts();
+    $('#delProductModal').on('hidden.bs.modal', () => {
+      this.deleteBtn = '';
+    });
+  },
+};
+</script>
+
 <template>
   <div class="productsmanagement">
     <div class="container">
@@ -121,103 +215,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import $ from 'jquery';
-import Pagination from '../../components/common/Pagination.vue';
-import Newproductmodal from '../../components/admin/Newproductmodal.vue';
-import Productmodal from '../../components/admin/Productmodal.vue';
-import Delproductmodal from '../../components/admin/Delproductmodal.vue';
-
-export default {
-  data() {
-    return {
-      products: [],
-      lockingBtn: '',
-      deleteBtn: '',
-      pagination: {},
-      tempProduct: {
-        imageUrl: [],
-      },
-    };
-  },
-  components: {
-    Pagination,
-    Newproductmodal,
-    Productmodal,
-    Delproductmodal,
-  },
-  methods: {
-    getProducts(num = 1) {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/products?page=${num}`;
-      this.$http.get(url).then((response) => {
-        this.products = response.data.data;
-        this.pagination = response.data.meta.pagination;
-        if (this.tempProduct.id) {
-          this.tempProduct = {
-            imageUrl: [],
-          };
-          $('#productModal').modal('hide');
-        }
-        this.$store.commit('finishedLoading');
-      });
-    },
-    openModal(isNew, item) {
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${item.id}`;
-      switch (isNew) {
-        case 'new':
-          $('#newproductModal').modal('show');
-          break;
-        case 'edit':
-          this.$store.commit('isLoading');
-          this.lockingBtn = item.id;
-          this.$http.get(url).then((response) => {
-            this.tempProduct = response.data.data;
-            $('#productModal').modal('show');
-            this.$store.commit('finishedLoading');
-          });
-          break;
-        case 'delete':
-          this.deleteBtn = item.id;
-          $('#delProductModal').modal('show');
-          this.tempProduct = { ...item };
-          break;
-        default:
-          break;
-      }
-    },
-    patchItem(item) {
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${item.id}`;
-      this.$http
-        .patch(url, {
-          enabled: !item.enabled,
-        })
-        .then((response) => {
-          console.log(response.data.data.enabled);
-        });
-    },
-    unactiveloading() {
-      this.deleteBtn = '';
-    },
-    signout() {
-      document.cookie = 'myToken=;expires=;';
-      this.$router.push('/login');
-    },
-  },
-  created() {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
-    this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
-    this.getProducts();
-  },
-  mounted() {
-    this.getProducts();
-    $('#delProductModal').on('hidden.bs.modal', () => {
-      this.deleteBtn = '';
-    });
-  },
-};
-</script>
 
 <style lang="scss">
 /* Switch Style */

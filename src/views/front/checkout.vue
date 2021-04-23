@@ -1,3 +1,92 @@
+<script>
+export default {
+  data() {
+    return {
+      cart: {},
+      cartTotal: 0,
+      cartTotalafterCoupon: 0,
+      saveMoney: 0,
+      form: {
+        name: '',
+        email: '',
+        tel: '',
+        address: '',
+        payment: '',
+        coupon: '',
+        message: '',
+      },
+      applyCoupon: false,
+      couponEnabled: '',
+      orderID: '',
+      completed: false,
+      priceAfterCoupon: '',
+    };
+  },
+  filters: {
+    thousandth(num) {
+      const parts = num.toString().split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.');
+    },
+  },
+  methods: {
+    createOrder() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders`;
+      this.$http.post(url, this.form).then(() => {
+        console.log('訂單已傳送！！！');
+        this.$store.commit('finishedLoading');
+        this.completed = true;
+      });
+    },
+    searchCoupon() {
+      this.$store.commit('isLoading');
+      if (this.form.coupon) {
+        const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/coupon/search`;
+        this.$http.post(url, { code: this.form.coupon }).then((response) => {
+          this.couponEnabled = response.data.data.enabled;
+          if (this.couponEnabled) {
+            this.cartTotalafterCoupon = Math.ceil(
+              this.cartTotal * (response.data.data.percent / 100),
+            );
+            this.saveMoney = this.cartTotal - this.cartTotalafterCoupon;
+            this.applyCoupon = true;
+            this.$store.commit('finishedLoading');
+          } else {
+            alert("Can't Use Coupon Code.");
+            this.form.coupon = '';
+            this.applyCoupon = false;
+            this.$store.commit('finishedLoading');
+          }
+        })
+          .catch(() => {
+            alert('Not Exist!!');
+            this.form.coupon = '';
+            this.applyCoupon = false;
+            this.$store.commit('finishedLoading');
+          });
+      } else {
+        alert('Need Coupon Code!!');
+        this.form.coupon = '';
+        this.applyCoupon = false;
+        this.$store.commit('finishedLoading');
+      }
+    },
+  },
+  created() {
+    this.$store.commit('isLoading');
+    const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
+    this.$http.get(url).then((response) => {
+      this.cart = response.data.data;
+      this.cart.forEach((item) => {
+        this.cartTotal += item.product.price * item.quantity;
+        this.$store.commit('finishedLoading');
+      });
+    });
+  },
+};
+</script>
+
 <template>
   <div class="checkout">
     <div id="CheckingPage" class="container">
@@ -162,95 +251,6 @@
     <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      cart: {},
-      cartTotal: 0,
-      cartTotalafterCoupon: 0,
-      saveMoney: 0,
-      form: {
-        name: '',
-        email: '',
-        tel: '',
-        address: '',
-        payment: '',
-        coupon: '',
-        message: '',
-      },
-      applyCoupon: false,
-      couponEnabled: '',
-      orderID: '',
-      completed: false,
-      priceAfterCoupon: '',
-    };
-  },
-  filters: {
-    thousandth(num) {
-      const parts = num.toString().split('.');
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      return parts.join('.');
-    },
-  },
-  methods: {
-    createOrder() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders`;
-      this.$http.post(url, this.form).then(() => {
-        console.log('訂單已傳送！！！');
-        this.$store.commit('finishedLoading');
-        this.completed = true;
-      });
-    },
-    searchCoupon() {
-      this.$store.commit('isLoading');
-      if (this.form.coupon) {
-        const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/coupon/search`;
-        this.$http.post(url, { code: this.form.coupon }).then((response) => {
-          this.couponEnabled = response.data.data.enabled;
-          if (this.couponEnabled) {
-            this.cartTotalafterCoupon = Math.ceil(
-              this.cartTotal * (response.data.data.percent / 100),
-            );
-            this.saveMoney = this.cartTotal - this.cartTotalafterCoupon;
-            this.applyCoupon = true;
-            this.$store.commit('finishedLoading');
-          } else {
-            alert("Can't Use Coupon Code.");
-            this.form.coupon = '';
-            this.applyCoupon = false;
-            this.$store.commit('finishedLoading');
-          }
-        })
-          .catch(() => {
-            alert('Not Exist!!');
-            this.form.coupon = '';
-            this.applyCoupon = false;
-            this.$store.commit('finishedLoading');
-          });
-      } else {
-        alert('Need Coupon Code!!');
-        this.form.coupon = '';
-        this.applyCoupon = false;
-        this.$store.commit('finishedLoading');
-      }
-    },
-  },
-  created() {
-    this.$store.commit('isLoading');
-    const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-    this.$http.get(url).then((response) => {
-      this.cart = response.data.data;
-      this.cart.forEach((item) => {
-        this.cartTotal += item.product.price * item.quantity;
-        this.$store.commit('finishedLoading');
-      });
-    });
-  },
-};
-</script>
 
 <style lang="scss">
 #totalcart {

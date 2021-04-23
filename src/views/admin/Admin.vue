@@ -1,3 +1,14 @@
+<script>
+import lazyloadView from '@/router/lazyload-view';
+
+export default {
+  components: {
+    Navbar: () => lazyloadView(import('@/components/admin/Navbar.vue')),
+    Footer: () => lazyloadView(import('@/components/common/Footer.vue')),
+  },
+};
+</script>
+
 <template>
   <div class="admin">
     <Navbar></Navbar>
@@ -5,15 +16,3 @@
     <Footer></Footer>
   </div>
 </template>
-
-<script>
-import Navbar from '@/components/admin/Navbar.vue';
-import Footer from '@/components/common/Footer.vue';
-
-export default {
-  components: {
-    Navbar,
-    Footer,
-  },
-};
-</script>

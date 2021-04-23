@@ -1,3 +1,49 @@
+<script>
+export default {
+  data() {
+    return {
+      couponList: [],
+      newCoupon: {
+        percent: 0,
+        enabled: false,
+      },
+    };
+  },
+  computed: {
+    convertNum() {
+      return parseInt(this.newCoupon.percent, 10);
+    },
+  },
+  methods: {
+    update() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupons`;
+      this.$http.get(url).then((response) => {
+        this.couponList = response.data.data;
+        this.$store.commit('finishedLoading');
+      });
+    },
+    addnewCoupon() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon`;
+      this.$http.post(url, this.newCoupon).then(() => {
+        this.update();
+        this.newCoupon = {
+          percent: 0,
+          enabled: false,
+        };
+        this.$store.commit('finishedLoading');
+      });
+    },
+  },
+  created() {
+    const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
+    this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
+    this.update();
+  },
+};
+</script>
+
 <template>
   <div class="couponsmanagement">
     <div class="container my-5">
@@ -97,52 +143,6 @@
     <Loading :active.sync="this.$store.state.isLoading"></Loading>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      couponList: [],
-      newCoupon: {
-        percent: 0,
-        enabled: false,
-      },
-    };
-  },
-  computed: {
-    convertNum() {
-      return parseInt(this.newCoupon.percent, 10);
-    },
-  },
-  methods: {
-    update() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupons`;
-      this.$http.get(url).then((response) => {
-        this.couponList = response.data.data;
-        this.$store.commit('finishedLoading');
-      });
-    },
-    addnewCoupon() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon`;
-      this.$http.post(url, this.newCoupon).then(() => {
-        this.update();
-        this.newCoupon = {
-          percent: 0,
-          enabled: false,
-        };
-        this.$store.commit('finishedLoading');
-      });
-    },
-  },
-  created() {
-    const token = document.cookie.replace(/(?:(?:^|.*;\s*)myToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
-    this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
-    this.update();
-  },
-};
-</script>
 
 <style lang="scss">
 .input_style:focus {

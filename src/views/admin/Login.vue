@@ -1,3 +1,39 @@
+<script>
+export default {
+  data() {
+    return {
+      user: {
+        email: '',
+        password: '',
+      },
+    };
+  },
+  methods: {
+    signin() {
+      this.$store.commit('isLoading');
+      const url = `${process.env.VUE_APP_APIPATH}/api/auth/login`;
+      this.$http
+        .post(url, this.user)
+        .then((response) => {
+          const { token, expired } = response.data;
+          // 伺服器回傳token和expired後，將其存到cookie裡面
+          document.cookie = `myToken=${token}; expires=${new Date(
+            expired * 1000,
+          )}; path=/`;
+          this.$router.push('/admin/productsmanagement');
+        })
+        .catch(() => {
+          alert('登入失敗！！！');
+          window.location.reload();
+        });
+    },
+    goBackFront() {
+      this.$router.push('/');
+    },
+  },
+};
+</script>
+
 <template>
   <div class="login">
     <!-- <Loading :active.sync="isLoading"></Loading> -->
@@ -40,42 +76,6 @@
     <loading :active.sync="this.$store.state.isLoading"></loading>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      user: {
-        email: '',
-        password: '',
-      },
-    };
-  },
-  methods: {
-    signin() {
-      this.$store.commit('isLoading');
-      const url = `${process.env.VUE_APP_APIPATH}/api/auth/login`;
-      this.$http
-        .post(url, this.user)
-        .then((response) => {
-          const { token, expired } = response.data;
-          // 伺服器回傳token和expired後，將其存到cookie裡面
-          document.cookie = `myToken=${token}; expires=${new Date(
-            expired * 1000,
-          )}; path=/`;
-          this.$router.push('/admin/productsmanagement');
-        })
-        .catch(() => {
-          alert('登入失敗！！！');
-          window.location.reload();
-        });
-    },
-    goBackFront() {
-      this.$router.push('/');
-    },
-  },
-};
-</script>
 
 <style lang="scss">
 html,
