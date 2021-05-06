@@ -8,66 +8,66 @@ const routes = [
   // 前台頁面
   {
     path: '/',
-    component: () => import('../views/front/Front.vue'),
+    component: () => import('../views/front/Home/Index'),
     // conponent: () => lazyLoadView(import('../views/front/Front')),
     children: [
       {
         path: '',
-        component: () => import('../views/front/About.vue'),
+        component: () => import('../views/front/About/Index'),
         // component: () => lazyLoadView(import('../views/front/About')),
       },
       {
         path: 'shop',
-        component: () => import('../views/front/Shop.vue'),
+        component: () => import('../views/front/Shop/Index'),
       },
       {
         path: 'checkout',
-        component: () => import('../views/front/Checkout.vue'),
+        component: () => import('../views/front/Checkout/Index'),
       },
       {
         path: 'cart',
-        component: () => import('../views/front/Cart.vue'),
+        component: () => import('../views/front/Cart/Index'),
       },
       {
         path: 'FAQ',
-        component: () => import('../views/front/FAQ.vue'),
+        component: () => import('../views/front/FAQ/Index'),
       },
     ],
   },
   // 登入頁面
   {
     path: '/login',
-    component: () => import('../views/admin/Login.vue'),
+    component: () => import('../views/admin/Login/Index'),
     // conponent: () => lazyLoadView(import('../views/admin/Login.vue')),
   },
   // 後台頁面
   {
     path: '/admin',
-    component: () => import('../views/admin/Admin.vue'),
+    component: () => import('../views/admin/Admin/Index'),
     children: [
       {
         path: 'productsmanagement',
-        component: () => import('../views/admin/Productsmanagement.vue'),
+        component: () => import('../views/admin/ProductManagement/Index'),
       },
       {
         path: 'ordersmanagement',
-        component: () => import('../views/admin/Ordersmanagement.vue'),
+        component: () => import('../views/admin/OrderManagement/Index'),
       },
       {
         path: 'orderdetail/:id',
-        component: () => import('../views/admin/Orderdetail.vue'),
+        component: () => import('../views/admin/OrderDetail/Index'),
       },
       {
         path: 'couponsmanagement',
-        component: () => import('../views/admin/Couponsmanagement.vue'),
+        component: () => import('../views/admin/CouponManagement/Index'),
       },
       {
         path: 'coupondetail/:id',
-        component: () => import('../views/admin/Coupondetail.vue'),
+        component: () => import('../views/admin/CouponDetail/Index'),
       },
       {
         path: 'storagesmanagement',
-        component: () => import('../views/admin/Storagesmanagement.vue'),
+        component: () => import('../views/admin/StorageManagement/Index'),
       },
     ],
   },

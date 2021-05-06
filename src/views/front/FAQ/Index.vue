@@ -1,6 +1,6 @@
 <script>
-import General from '../../components/front/FAQ_general.vue';
-import Discountcode from '../../components/front/FAQ_discountcode.vue';
+import General from './components/General.vue';
+import Discountcode from './components/Discountcode.vue';
 
 export default {
   data() {
@@ -19,7 +19,7 @@ export default {
 
 <template>
   <div class="faq">
-    <div class="needHelp mb-3">
+    <div class="needHelp mb-3 text-center">
       <p class="h1">Need Help?</p>
       <p class="mb-0 pt-4">
         <a href="mailto:milkjhang@hotmail.com" class="email_link">milkjhang@hotmail.com</a>

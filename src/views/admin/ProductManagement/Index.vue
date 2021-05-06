@@ -16,8 +16,8 @@ export default {
   },
   components: {
     Pagination: () => lazyloadView(import('@/components/common/Pagination.vue')),
-    Newproductmodal: () => lazyloadView(import('@/components/admin/Newproductmodal.vue')),
-    Productmodal: () => lazyloadView(import('@/components/admin/Productmodal.vue')),
+    Newproductmodal: () => lazyloadView(import('./components/Newproductmodal.vue')),
+    Productmodal: () => lazyloadView(import('./components/Productmodal.vue')),
     Delproductmodal: () => lazyloadView(import('./components/DelProductModal')),
   },
   methods: {

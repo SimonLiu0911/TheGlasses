@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home text-center">
     <p class="py-5 h2">The Glasses</p>
     <div class="background_image"></div>
     <div class="py-5">
