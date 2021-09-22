@@ -1,4 +1,4 @@
-# 電商網站 - The Glasses(持續更新＆優化中)
+# 電商網站 - The Glasses(暫停優化，重新另起新架構)
 此SPA專案作品為虛擬購物商店，銷售主題為Glasses，並包含前台以及後台API串接。
 
 ## Demo:
